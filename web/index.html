@@ -420,7 +420,8 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
 
 <script>
 "use strict";
-const VERSION = "5";
+const VERSION = "6";
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxLGwL8uY56Q8Cl1CBQotiZIzz6NdHRpxFjn4kyqybkL5Or9g34nSiurC1aZ8VTjM6iaQ/exec";
 const IMG = "https://prod-mercadona.imgix.net/images/";
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -438,6 +439,7 @@ let D = leer("mc-datos", { items: {}, hab: {} });
 D.items ||= {}; D.hab ||= {};
 let HIST = leer("mc-hist", {});
 let AJ = leer("mc-ajustes", { url: "", clave: "", tema: "auto", carro: true });
+if (!AJ.url) AJ.url = URL_SCRIPT;
 let CAT = { secciones: [], productos: [] }, PORID = new Map(), RECETAS = [];
 let estado = { vista: "lista", seccion: null, verN: 60, fRapidas: false, fMiLista: false };
 
@@ -550,7 +552,7 @@ function renderLista() {
   if (!todos.length) {
     h = `<div class="vacio">${ico("i-lista")}<b>Tu lista está vacía</b>Busca arriba un producto, o añádelos desde Productos, Recetas o Habituales.</div>`;
   } else {
-    const comp = AJ.url ? "Lista compartida" : "En este dispositivo";
+    const comp = AJ.url && AJ.clave ? "Lista compartida" : "En este dispositivo";
     h += `<div class="resumen"><div class="num"><b>${pend.length} pendiente${pend.length === 1 ? "" : "s"}</b><span>${comp}</span></div>
       <button class="btn-icono" data-acc="compartir" aria-label="Compartir la lista">${ico("i-compartir")}</button>
       <button class="btn-pri" data-acc="tienda">${ico("i-carro")}Modo tienda</button></div>`;
@@ -796,12 +798,12 @@ function fichaAjustes() {
   const fecha = CAT.fecha ? new Date(CAT.fecha).toLocaleDateString("es-ES", { day: "numeric", month: "long" }) : "—";
   abrirHoja(`<h2 style="margin-top:14px">Ajustes</h2><div class="sub">Mi Compra · versión ${VERSION}</div>
     <div class="h-sec">Sincronización iPhone ↔ iPad</div><div class="bloque" style="padding:10px 14px 14px">
-      <label class="etq" for="ajUrl">Dirección del script de Google</label>
-      <input class="campo" id="ajUrl" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" value="${esc(AJ.url)}" autocomplete="off">
       <label class="etq" for="ajClave">Contraseña</label>
       <input class="campo" id="ajClave" type="password" value="${esc(AJ.clave)}" autocomplete="current-password">
       <p class="estado-s ${sinc.estado === "mal" ? "mal" : ""}" id="ajEstado">${esc(sinc.msg || est)}</p>
-      <button class="btn-pri ancho" data-acc="guardarSinc">Guardar y sincronizar</button></div>
+      <button class="btn-pri ancho" data-acc="guardarSinc">Guardar y sincronizar</button>
+      <details style="margin-top:12px"><summary class="nota" style="margin:0;cursor:pointer">Dirección del script</summary>
+        <input class="campo" id="ajUrl" type="url" inputmode="url" value="${esc(AJ.url)}" autocomplete="off" style="margin-top:8px;font-size:13px"></details></div>
     <div class="h-sec">Mi tienda</div><div class="bloque"><button class="linea-aj" style="width:100%;text-align:left" data-acc="ordenTienda">
       <span class="ico-sec">${ico("i-orden")}</span><span class="txt"><b>Orden de las secciones</b><span>Como recorres tu Mercadona</span></span>${ico("i-der", "i chev")}</button></div>
     <div class="h-sec">Catálogo</div><div class="bloque">
@@ -921,7 +923,7 @@ document.addEventListener("click", e => {
     case "sugSi": { const h = HIST[pid]; D.hab[pid] = { on: true, t: ahora(), n: h.n, f: h.f, i: h.i, z: h.z }; guardarDatos(); aviso("Añadido a habituales"); renderHabituales(); break; }
     case "sugNo": { const h = HIST[pid]; D.hab[pid] = { on: false, no: ahora(), t: ahora(), n: h.n, f: h.f, i: h.i, z: h.z }; guardarDatos(); renderHabituales(); break; }
     case "tema": AJ.tema = b.dataset.t; guardar("mc-ajustes", AJ); aplicarTema(); fichaAjustes(); break;
-    case "guardarSinc": AJ.url = $("#ajUrl").value.trim(); AJ.clave = $("#ajClave").value; guardar("mc-ajustes", AJ); sinc.clavemala = false; sincronizar(true); break;
+    case "guardarSinc": AJ.url = $("#ajUrl").value.trim() || URL_SCRIPT; AJ.clave = $("#ajClave").value; guardar("mc-ajustes", AJ); sinc.clavemala = false; sincronizar(true); break;
   }
 });
 document.querySelectorAll("nav.menu button").forEach(b => b.addEventListener("click", () => {
@@ -961,11 +963,11 @@ function limpiar() {
   for (const [k, it] of Object.entries(D.items)) if (it.x && it.t < lim) delete D.items[k];
 }
 function programarSinc() {
-  if (!AJ.url) return; sinc.estado = "pend"; pintarPunto();
+  if (!AJ.url || !AJ.clave) return; sinc.estado = "pend"; pintarPunto();
   clearTimeout(sinc.t); sinc.t = setTimeout(() => sincronizar(), 1500);
 }
 async function sincronizar(manual) {
-  if (!AJ.url || sinc.enCurso) { pintarPunto(); return; }
+  if (!AJ.url || !AJ.clave || sinc.enCurso) { pintarPunto(); return; }
   if (sinc.clavemala && !manual) { sinc.estado = "mal"; sinc.msg = "Contraseña incorrecta: revísala en Ajustes."; pintarPunto(); return; }
   clearTimeout(sinc.t); sinc.t = null;
   sinc.enCurso = true; sinc.estado = "pend"; pintarPunto();
@@ -992,7 +994,7 @@ async function sincronizar(manual) {
     if (hojaTipo === "ajustes" && $("#ajEstado")) { $("#ajEstado").textContent = sinc.msg; $("#ajEstado").classList.toggle("mal", sinc.estado === "mal"); }
   }
 }
-setInterval(() => { if (document.visibilityState === "visible" && AJ.url && !sinc.t) sincronizar(); }, 20000);
+setInterval(() => { if (document.visibilityState === "visible" && AJ.url && AJ.clave && !sinc.t) sincronizar(); }, 20000);
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") sincronizar(); });
 
 /* ---------- Arranque ---------- */
