@@ -82,7 +82,8 @@ def main():
         if os.path.exists(destino) and s in cred and s not in rehacer:
             continue
         try:
-            c = next(candidatos(archivo=elegidas[receta]) if receta in elegidas else candidatos(q), None)
+            vieja = cred.get(s, {}).get("pagina") if s in rehacer else None
+            c = next((x for x in (candidatos(archivo=elegidas[receta]) if receta in elegidas else candidatos(q)) if x["pagina"] != vieja), None)
             if not c:
                 log(f"sin foto: {receta} ({q})"); fallos += 1; continue
             datos = descargar(c["url"])
