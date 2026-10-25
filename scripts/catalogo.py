@@ -40,14 +40,10 @@ def main():
             datos, _ = pedir(f"{BASE}/categories/{sub['id']}/?lang=es&wh={wh}")
             for sec in datos.get("categories", []):
                 for p in sec.get("products", []):
-                    pi = p.get("price_instructions", {})
                     productos.append({
                         "id": p["id"],
                         "n": p.get("display_name"),
                         "f": p.get("packaging"),
-                        "p": float(pi.get("unit_price") or 0),
-                        "pr": pi.get("reference_price"),
-                        "ur": pi.get("reference_format"),
                         "img": p.get("thumbnail"),
                         "g": grupo["name"],
                         "c": sub["name"],
@@ -55,7 +51,7 @@ def main():
                     })
             time.sleep(0.3)
     os.makedirs("web", exist_ok=True)
-    salida = {"cp": CP, "almacen": wh, "fecha": time.strftime("%Y-%m-%d"),
+    salida = {"cp": CP, "almacen": wh,
               "categorias": cats, "productos": productos}
     with open("web/catalogo.json", "w", encoding="utf-8") as f:
         json.dump(salida, f, ensure_ascii=False, separators=(",", ":"))
