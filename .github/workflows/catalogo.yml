@@ -2,6 +2,11 @@ name: Catálogo y web
 
 on:
   workflow_dispatch:
+    inputs:
+      rehacer:
+        description: "Fotos a volver a buscar (slugs separados por comas)"
+        required: false
+        default: ""
   push:
     branches: [main]
   schedule:
@@ -33,17 +38,23 @@ jobs:
       - name: Descargar catálogo
         id: catalogo
         if: github.event_name != 'push'
-        run: python scripts/catalogo.py && python scripts/recetas.py
+        run: python scripts/catalogo.py
         env:
           CP: "04230"
+
+      - name: Fotos libres de las recetas
+        if: steps.catalogo.outcome == 'success'
+        run: python scripts/fotos.py && python scripts/recetas.py
+        env:
+          REHACER: ${{ github.event.inputs.rehacer }}
 
       - name: Guardar catálogo si ha cambiado
         if: steps.catalogo.outcome == 'success'
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git add web/catalogo.json web/recetas.json
-          git diff --cached --quiet || (git commit -m "Catálogo actualizado $(date +%F)" && git push)
+          git add web/catalogo.json web/recetas.json web/fotos
+          git diff --cached --quiet || (git commit -m "Catálogo y fotos actualizados $(date +%F)" && git push)
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
