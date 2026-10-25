@@ -445,7 +445,8 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
 
 <script>
 "use strict";
-const VERSION = "9";
+const VERSION = "10";
+const CON_RECETAS = false; // recetas ocultas (25/10/2026); poner true para volver a mostrarlas
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxLGwL8uY56Q8Cl1CBQotiZIzz6NdHRpxFjn4kyqybkL5Or9g34nSiurC1aZ8VTjM6iaQ/exec";
 const IMG = "https://prod-mercadona.imgix.net/images/";
 const $ = s => document.querySelector(s);
@@ -473,7 +474,7 @@ function guardarDatos() { guardar("mc-datos", D); programarSinc(); }
 
 /* ---------- Catálogo y recetas ---------- */
 async function cargar() {
-  const [rc, rr] = await Promise.allSettled([fetch("catalogo.json"), fetch("recetas.json")]);
+  const [rc, rr] = await Promise.allSettled([fetch("catalogo.json"), CON_RECETAS ? fetch("recetas.json") : Promise.reject()]);
   if (rc.status === "fulfilled" && rc.value.ok) {
     CAT = await rc.value.json();
     CAT.fecha = rc.value.headers.get("last-modified");
@@ -795,7 +796,7 @@ function anadirFaltan(id) {
 function fichaProducto(pid) {
   const p = PORID.get(pid); if (!p) return;
   const it = enLista(pid), hab = D.hab[pid] && D.hab[pid].on;
-  const recs = RECETAS.filter(r => r.ing.some(i => coincide(p._n, norm(i.q)))).slice(0, 4);
+  const recs = !CON_RECETAS ? [] : RECETAS.filter(r => r.ing.some(i => coincide(p._n, norm(i.q)))).slice(0, 4);
   let h = `<img class="foto-grande" src="${esc(foto(p.i, 600))}" alt="">
     <h2>${esc(p.n)}</h2><div class="sub">${esc(p.f)}${p.f ? " · " : ""}${esc(nomSec(p.z))} › ${esc(p.c)}</div>`;
   h += it ? `<div class="bloque"><div class="linea-aj"><span class="txt"><b>En tu lista</b></span>${pasoHTML("p" + pid, it.q || 1)}</div></div>`
@@ -868,7 +869,7 @@ function fichaAjustes() {
       <div class="linea-aj"><span class="txt"><b>Actualizado</b></span><span class="cuenta">${esc(fecha)}</span></div></div>
     <div class="h-sec">Apariencia</div><div class="segmento" role="radiogroup">
       ${[["auto","Automático"],["light","Claro"],["dark","Oscuro"]].map(([k, t]) => `<button role="radio" aria-checked="${AJ.tema === k}" class="${AJ.tema === k ? "on" : ""}" data-acc="tema" data-t="${k}">${t}</button>`).join("")}</div>
-    <p class="nota" style="margin-top:18px">Recetas sencillas incluidas: ${RECETAS.length}.</p>`, "ajustes");
+    ${CON_RECETAS ? `<p class="nota" style="margin-top:18px">Recetas sencillas incluidas: ${RECETAS.length}.</p>` : ""}`, "ajustes");
 }
 function fichaOrden() {
   const v = ordenTienda();
@@ -1096,6 +1097,7 @@ setInterval(() => { if (document.visibilityState === "visible" && AJ.url && AJ.c
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") sincronizar(); });
 
 /* ---------- Arranque ---------- */
+if (!CON_RECETAS) { document.querySelector('nav.menu [data-v="recetas"]')?.remove(); $("#v-recetas")?.remove(); }
 aplicarTema(); pintarPunto(); render(); cargar(); sincronizar();
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 </script>

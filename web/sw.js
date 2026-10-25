@@ -1,6 +1,6 @@
-const VERSION = "mi-compra-v9";
+const VERSION = "mi-compra-v10";
 const APP = ["./", "index.html", "manifest.json", "icono-180.png", "icono-192.png"];
-const DATOS = ["catalogo.json", "recetas.json"];
+const DATOS = ["catalogo.json"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(APP.concat(DATOS))).then(() => self.skipWaiting()));
