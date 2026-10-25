@@ -163,6 +163,16 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .chip-f.on{background:var(--pri-fuerte);color:#fff;border-color:var(--pri-fuerte)}
 .banda{display:flex;align-items:center;gap:10px;background:var(--niebla);color:var(--sobre-niebla);border-radius:14px;padding:10px 14px;font-size:13px;margin-bottom:14px}
 .banda svg{width:18px;height:18px}
+.grupo{background:var(--sup);border-radius:16px;overflow:hidden;margin-bottom:8px}
+.cab-grupo{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;text-align:left}
+.cab-grupo .ico-sec{width:38px;height:38px}
+.cab-grupo .txt b{font-size:16px}
+.grupo.abierto .cab-grupo{background:var(--niebla)}
+.grupo.abierto .cab-grupo .ico-sec{background:var(--sup)}
+.grupo.abierto .cab-grupo .cuenta{color:var(--sobre-niebla);font-weight:700}
+.fila-rec{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:10px 14px;border-top:.5px solid var(--linea);text-align:left}
+.fila-rec .nom{flex:1;min-width:0;font-size:15px;font-weight:600;line-height:1.3}
+.fila-rec .min{font-size:13px;color:var(--texto2);white-space:nowrap}
 .receta{display:block;width:100%;text-align:left;background:var(--sup);border-radius:18px;overflow:hidden;margin-bottom:14px}
 .portada{position:relative;height:118px;display:flex;align-items:center;gap:16px;padding:0 18px;background:var(--niebla);overflow:hidden}
 .portada .dibujo{width:84px;height:84px;border-radius:50%;background:var(--sup);display:grid;place-items:center;color:var(--pri);flex:none;box-shadow:var(--sombra)}
@@ -420,7 +430,7 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
 
 <script>
 "use strict";
-const VERSION = "6";
+const VERSION = "7";
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxLGwL8uY56Q8Cl1CBQotiZIzz6NdHRpxFjn4kyqybkL5Or9g34nSiurC1aZ8VTjM6iaQ/exec";
 const IMG = "https://prod-mercadona.imgix.net/images/";
 const $ = s => document.querySelector(s);
@@ -692,6 +702,10 @@ function portada(r, alto) {
   return `<div class="portada"${alto ? ` style="height:${alto}px;border-radius:18px;margin:14px 0 16px"` : ""}>
     <span class="fondo">${ico("r-" + r.g)}</span><span class="dibujo">${ico("r-" + r.g)}</span><span class="ingrs">${ings}</span></div>`;
 }
+const GRUPOS = [["pollo","Pollo"],["carne","Carne"],["pescado","Pescado y marisco"],["pasta","Pasta"],["arroz","Arroces"],["legumbre","Legumbres"],
+  ["huevo","Huevos y tortillas"],["verdura","Ensaladas y patatas"],["sopa","Sopas y guisos"],["rapida","Rápidas y bocadillos"],["postre","Postres"]];
+const GRUPO_DE = { pollo: "pollo", carne: "carne", pescado: "pescado", marisco: "pescado", pasta: "pasta", arroz: "arroz", legumbre: "legumbre",
+  huevo: "huevo", verdura: "verdura", sopa: "sopa", rapida: "rapida", postre: "postre" };
 function renderRecetas() {
   const q = norm($("#busRec").value);
   $("#borRec").classList.toggle("oculto", !q);
@@ -704,10 +718,20 @@ function renderRecetas() {
   const conLista = RECETAS.filter(r => estadoReceta(r).n > 0).length;
   if (!q && conLista && !estado.fMiLista) h += `<div class="banda">${ico("i-chispa")}<span>${conLista} receta${conLista === 1 ? "" : "s"} usan algo de tu lista</span></div>`;
   if (!rs.length) h += `<div class="vacio">${ico("i-olla")}<b>No hay recetas así</b>${estado.fMiLista ? "Añade productos a tu lista para ver ideas." : "Prueba con otro ingrediente."}</div>`;
-  for (const [r, e] of rs) {
-    const ins = e.todo ? `<span class="insignia todo">Todo en tu lista</span>` : e.n ? `<span class="insignia">${e.n} en tu lista</span>` : "";
-    h += `<button class="receta" data-acc="receta" data-r="${r.id}">${portada(r)}<div class="cuerpo"><h3>${esc(r.n)}</h3>
-      <div class="meta"><span>${ico("i-reloj")}${r.t} min</span><span>${ico("i-cesta")}${r.ing.length} ingredientes</span>${ins}</div></div></button>`;
+  const filtrando = !!(q || estado.fRapidas || estado.fMiLista);
+  for (const [g, nombre] of GRUPOS) {
+    const del = rs.filter(([r]) => (GRUPO_DE[r.g] || "rapida") === g);
+    if (!del.length) continue;
+    const abierto = filtrando || AJ.abiertos?.includes(g);
+    const enLista = del.filter(([, e]) => e.n > 0).length;
+    h += `<div class="grupo ${abierto ? "abierto" : ""}"><button class="cab-grupo" data-acc="grupo" data-g="${g}" aria-expanded="${abierto}">
+      <span class="ico-sec">${ico("r-" + g)}</span><span class="txt"><b>${esc(nombre)}</b>${enLista && !abierto ? `<span>${enLista} con algo de tu lista</span>` : ""}</span>
+      <span class="cuenta">${del.length}</span>${ico(abierto ? "i-arriba" : "i-abajo", "i chev")}</button>`;
+    if (abierto) for (const [r, e] of del) {
+      const ins = e.todo ? `<span class="insignia todo">Todo</span>` : e.n ? `<span class="insignia">${e.n} en lista</span>` : "";
+      h += `<button class="fila-rec" data-acc="receta" data-r="${r.id}"><span class="nom">${esc(r.n)}</span>${ins}<span class="min">${r.t} min</span></button>`;
+    }
+    h += `</div>`;
   }
   $("#cuerpoRec").innerHTML = h;
 }
@@ -915,6 +939,7 @@ document.addEventListener("click", e => {
       let n = 0; for (const k of selHab) { const h = D.hab[k], p = PORID.get(k) || { id: k, n: h.n, f: h.f, i: h.i, z: h.z }; if (!enLista(k)) { anadir(p, 1, true); n++; } }
       selHab = new Set(); aviso(n ? `${n} añadido${n === 1 ? "" : "s"} a la lista` : "Ya estaban en la lista"); renderHabituales(); break;
     }
+    case "grupo": { const g = b.dataset.g, a = new Set(AJ.abiertos || []); a.has(g) ? a.delete(g) : a.add(g); AJ.abiertos = [...a]; guardar("mc-ajustes", AJ); renderRecetas(); break; }
     case "compartir": compartirLista(); break;
     case "ordenTienda": fichaOrden(); break;
     case "subir": moverSec(+b.dataset.z, -1); break;
