@@ -445,7 +445,7 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
 
 <script>
 "use strict";
-const VERSION = "11";
+const VERSION = "12";
 const CON_RECETAS = false; // recetas ocultas (25/10/2026); poner true para volver a mostrarlas
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxLGwL8uY56Q8Cl1CBQotiZIzz6NdHRpxFjn4kyqybkL5Or9g34nSiurC1aZ8VTjM6iaQ/exec";
 const IMG = "https://prod-mercadona.imgix.net/images/";
@@ -485,10 +485,6 @@ async function cargar() {
     for (const r of RECETAS) r._n = norm(r.n + " " + r.ing.map(i => i.n).join(" "));
   }
   render();
-  if (new URLSearchParams(location.search).get("tienda") === "1") {
-    history.replaceState(null, "", location.pathname);
-    if (vivos().some(([, it]) => !it.h)) abrirTienda(); else aviso("No tienes nada pendiente en la lista");
-  }
 }
 
 function coincide(nombreNorm, consultaNorm) {
