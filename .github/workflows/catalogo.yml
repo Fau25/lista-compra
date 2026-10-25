@@ -26,13 +26,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
-        if: github.event_name != 'push' || contains(join(github.event.commits.*.modified, ','), 'scripts/catalogo.py')
+        if: github.event_name != 'push'
         with:
           python-version: "3.12"
 
       - name: Descargar catálogo
         id: catalogo
-        if: github.event_name != 'push' || contains(join(github.event.commits.*.modified, ','), 'scripts/catalogo.py')
+        if: github.event_name != 'push'
         run: python scripts/catalogo.py
         env:
           CP: "04230"
