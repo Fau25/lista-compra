@@ -64,7 +64,7 @@ def descargar(url):
                 return r.read()
         except urllib.error.HTTPError as e:
             if e.code in (429, 503) and intento < 4:
-                time.sleep(int(e.headers.get("Retry-After") or 0) or 5 * (intento + 1)); continue
+                time.sleep(int(e.headers.get("Retry-After") or 0) or 15 * (intento + 1)); continue
             raise
 
 
@@ -75,7 +75,7 @@ def main():
     ruta_cred = "web/fotos/creditos.json"
     cred = json.load(open(ruta_cred, encoding="utf-8")) if os.path.exists(ruta_cred) else {}
     rehacer = set(filter(None, os.environ.get("REHACER", "").split(",")))
-    nuevas = fallos = 0
+    nuevas = fallos = seguidos = 0
     for receta, q in busquedas.items():
         s = slug(receta)
         destino = f"web/fotos/{s}.jpg"
@@ -93,7 +93,13 @@ def main():
             log(f"ok: {receta}")
         except Exception as e:
             log(f"error: {receta}: {e}"); fallos += 1
-        time.sleep(1.5)
+            if "429" in str(e):
+                seguidos += 1
+                if seguidos >= 2:
+                    log("Wikimedia pide esperar: se sigue en la próxima pasada"); break
+                time.sleep(60); continue
+        seguidos = 0
+        time.sleep(6)
     json.dump(cred, open(ruta_cred, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
     log(f"{nuevas} fotos nuevas, {fallos} sin foto, {len(cred)} en total")
     open("scripts/fotos_registro.txt", "w", encoding="utf-8").write("\n".join(REG) + "\n")
