@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tienda · Mi Compra</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tienda">
+<meta name="theme-color" content="#F5F1E8">
+<link rel="manifest" href="manifest-tienda.json">
+<link rel="apple-touch-icon" href="tienda-180.png">
+<script>
+  // Abierta desde el icono de la pantalla de inicio: directa al modo tienda
+  if (navigator.standalone || matchMedia("(display-mode: standalone)").matches) location.replace("./?tienda=1");
+</script>
+<style>
+  :root{--bg:#F5F1E8;--sup:#fff;--t:#1F2A24;--t2:#6A675E;--pri:#255340}
+  @media (prefers-color-scheme:dark){:root{--bg:#1A201C;--sup:#232B25;--t:#E7EBE6;--t2:#A9B0A7}}
+  body{margin:0;background:var(--bg);color:var(--t);font-family:"Nunito Sans",system-ui,-apple-system,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px;box-sizing:border-box}
+  .caja{max-width:360px;background:var(--sup);border-radius:22px;padding:28px 24px;text-align:center}
+  img{width:72px;height:72px;border-radius:18px}
+  h1{font-size:22px;margin:14px 0 6px}
+  p{color:var(--t2);font-size:15px;line-height:1.45;margin:0 0 18px}
+  a{display:block;background:var(--pri);color:#fff;text-decoration:none;font-weight:700;border-radius:12px;padding:14px}
+</style>
+</head>
+<body>
+  <div class="caja">
+    <img src="tienda-180.png" alt="">
+    <h1>Modo tienda</h1>
+    <p>Para tenerlo como icono aparte: pulsa <b>Compartir</b> y luego <b>Añadir a pantalla de inicio</b>. Al abrirlo desde ahí irá directo al modo tienda.</p>
+    <a href="./?tienda=1">Abrir el modo tienda</a>
+  </div>
+</body>
+</html>

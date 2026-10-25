@@ -1,5 +1,5 @@
-const VERSION = "mi-compra-v12";
-const APP = ["./", "index.html", "manifest.json", "icono-180.png", "icono-192.png"];
+const VERSION = "mi-compra-v13";
+const APP = ["./", "index.html", "manifest.json", "icono-180.png", "icono-192.png", "tienda.html", "manifest-tienda.json", "tienda-180.png"];
 const DATOS = ["catalogo.json"];
 
 self.addEventListener("install", e => {
