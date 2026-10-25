@@ -1,0 +1,30 @@
+name: Catálogo Mercadona
+
+on:
+  workflow_dispatch:
+  push:
+    paths: ["scripts/catalogo.py", ".github/workflows/catalogo.yml"]
+  schedule:
+    - cron: "17 4 * * 1"   # lunes ~5-6 h en España
+
+permissions:
+  contents: write
+
+jobs:
+  catalogo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Descargar catálogo
+        run: python scripts/catalogo.py
+        env:
+          CP: "04230"
+      - name: Guardar si ha cambiado
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add web/catalogo.json
+          git diff --cached --quiet || (git commit -m "Catálogo actualizado $(date +%F)" && git push)
