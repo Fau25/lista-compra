@@ -33,7 +33,7 @@ jobs:
       - name: Descargar catálogo
         id: catalogo
         if: github.event_name != 'push'
-        run: python scripts/catalogo.py
+        run: python scripts/catalogo.py && python scripts/recetas.py
         env:
           CP: "04230"
 
@@ -42,7 +42,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git add web/catalogo.json
+          git add web/catalogo.json web/recetas.json
           git diff --cached --quiet || (git commit -m "Catálogo actualizado $(date +%F)" && git push)
 
       - uses: actions/configure-pages@v5

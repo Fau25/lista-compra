@@ -65,6 +65,14 @@ def formato(p):
     pi = p.get("price_instructions") or {}
     tam, uni = numero(pi.get("unit_size")), (pi.get("size_format") or "").strip()
     uni = {"l": "L", "ud": "ud", "kg": "kg", "g": "g", "ml": "ml"}.get(uni.lower(), uni)
+    try:
+        v = float(pi.get("unit_size"))
+        if uni == "L" and v < 1:
+            tam, uni = numero(round(v * 1000)), "ml"
+        elif uni == "kg" and v < 1:
+            tam, uni = numero(round(v * 1000)), "g"
+    except (TypeError, ValueError):
+        pass
     medida = f"{tam} {uni}".strip() if tam else ""
     if pi.get("is_pack") and pi.get("total_units") and pi.get("unit_name"):
         medida = f"{pi['total_units']} {pi['unit_name']}" + (f" · {medida}" if medida else "")
