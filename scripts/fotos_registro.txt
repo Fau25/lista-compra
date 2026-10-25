@@ -1,59 +1,24 @@
-sin foto: Ensalada de garbanzos con atún (chickpea tuna salad)
-ok: Bacalao con tomate
-ok: Ensalada César
-ok: Croquetas al horno con ensalada
-ok: Patatas a lo pobre con huevo
-ok: Filetes de pavo en salsa de mostaza
-ok: Tostas de tomate, jamón y huevo
-ok: Arroz tres delicias
-ok: Muslos de pollo al ajillo
-ok: Hamburguesas caseras
-ok: Patatas a la riojana
-ok: Lubina al horno
-ok: Ensalada caprese
-ok: Macarrones con chorizo
-ok: Sándwich mixto con huevo
+ok: Pasta con atún y tomate
+ok: Ensalada de garbanzos con atún
+sin foto: Merluza en salsa verde (merluza salsa verde cazuela)
+ok: Fajitas de pollo
+sin foto: Lomo a la plancha con patatas (lomo de cerdo a la plancha)
+ok: Fideuá rápida
+ok: Tortilla de patatas
+sin foto: Ensalada de quinoa (quinoa salad feta tomato)
 ok: Dorada a la sal (fácil)
-ok: Alubias estofadas
-ok: Yogur con fresas y muesli
-ok: Manzana asada
-ok: Natillas rápidas con galleta
-ok: Pollo a la cerveza
-ok: Pollo en salsa de tomate
-ok: Alitas de pollo al horno
-ok: Pollo con miel y mostaza
-ok: Pollo al curry
-ok: Brochetas de pollo
-ok: Sándwich de pollo
-ok: Filetes de ternera con patatas
-ok: Espaguetis a la boloñesa
-ok: Chuletas de cerdo con manzana
+sin foto: Pollo a la cerveza (pollo guisado cazuela)
+error: Chuletas de cerdo con manzana: HTTP Error 429: Too Many Requests
 ok: Solomillo de cerdo a la mostaza
-ok: Carne guisada con patatas
-sin foto: Lomo adobado con huevo y patatas (lomo con huevos y patatas)
-ok: Lasaña fácil
+ok: Lomo adobado con huevo y patatas
 ok: Merluza a la romana
-ok: Salmón al horno con patatas
-ok: Tortilla francesa con queso
-ok: Huevos revueltos con jamón
-ok: Pasta al pesto
-ok: Tortellini con nata y jamón
+ok: Bacalao al horno con patatas
+ok: Emperador a la plancha
 ok: Pasta con pollo y nata
-ok: Espaguetis con ajo y guindilla
-ok: Paella de pollo
-ok: Sándwich de atún
-ok: Melón con jamón
+ok: Arroz a la cubana
 ok: Fresas con nata
-ok: Macedonia de frutas
 ok: Brochetas de fruta
 ok: Naranja con canela y miel
-ok: Peras al vino
 ok: Arroz con leche
 ok: Torrijas
-ok: Bizcocho de yogur
-ok: Tarta de queso al horno
-ok: Ensalada mixta
-ok: Patatas bravas
-ok: Patatas al horno con romero
-ok: Tomate aliñado con ventresca
-56 fotos nuevas, 2 sin foto, 107 en total
+18 fotos nuevas, 5 sin foto, 109 en total
