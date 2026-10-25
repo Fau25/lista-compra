@@ -78,6 +78,8 @@ def main():
     nuevas = fallos = seguidos = 0
     for receta, q in busquedas.items():
         s = slug(receta)
+        if not q and receta not in elegidas:
+            continue  # sin foto libre buena: se queda con el dibujo (o la foto del usuario)
         destino = f"web/fotos/{s}.jpg"
         if os.path.exists(destino) and s in cred and s not in rehacer:
             continue
