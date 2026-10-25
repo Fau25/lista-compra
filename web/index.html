@@ -171,6 +171,15 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .grupo.abierto .cab-grupo .ico-sec{background:var(--sup)}
 .grupo.abierto .cab-grupo .cuenta{color:var(--sobre-niebla);font-weight:700}
 .fila-rec{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:10px 14px;border-top:.5px solid var(--linea);text-align:left}
+.mini-rec{width:44px;height:44px;border-radius:10px;object-fit:cover;flex:none;background:var(--niebla)}
+.mini-rec.vacia{display:grid;place-items:center;color:var(--sobre-niebla)}
+.mini-rec.vacia svg{width:22px;height:22px;stroke-width:1.4}
+.fila-rec{padding-left:10px!important}
+.foto-rec{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:18px;margin:14px 0 6px;display:block;background:var(--niebla)}
+.credito{font-size:11.5px;color:var(--texto2);margin:0 4px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.credito a{color:var(--texto2)}
+.credito .btn-texto{margin-left:auto;font-size:13px;padding:6px 4px;display:inline-flex;align-items:center;gap:6px}
+.credito .btn-texto svg{width:18px;height:18px}
 .fila-rec .nom{flex:1;min-width:0;font-size:15px;font-weight:600;line-height:1.3}
 .fila-rec .min{font-size:13px;color:var(--texto2);white-space:nowrap}
 .receta{display:block;width:100%;text-align:left;background:var(--sup);border-radius:18px;overflow:hidden;margin-bottom:14px}
@@ -338,6 +347,7 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
   <symbol id="r-carne" viewBox="0 0 24 24"><path d="M14 3c3.9 0 7 3.1 7 7 0 3-1.7 5.4-4.3 6.5L10 20c-3 1.3-6.5-1-6.5-4.3 0-1.4.5-2.6 1.4-3.5L9 8c1.3-3 2.7-5 5-5Z"/><circle cx="14.5" cy="9.5" r="2"/></symbol>
   <symbol id="r-verdura" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10ZM2 21c0-3 1.9-5.4 5.2-6"/></symbol>
   <symbol id="r-marisco" viewBox="0 0 24 24"><path d="M12 21c-5 0-9-4-9-9 0-2 1-3 2-3 2 0 2 3 4 3s1-6 3-6 1 6 3 6 2-3 4-3c1 0 2 1 2 3 0 5-4 9-9 9ZM12 21v-6"/></symbol>
+  <symbol id="i-camara" viewBox="0 0 24 24"><path d="M14.5 4h-5L7.5 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3.5Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
   <symbol id="i-compartir" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></symbol>
   <symbol id="i-abajo" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="i-orden" viewBox="0 0 24 24"><path d="M3 6h13M3 12h9M3 18h5M18 9V20M15 17l3 3 3-3"/></symbol>
@@ -430,7 +440,7 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
 
 <script>
 "use strict";
-const VERSION = "7";
+const VERSION = "8";
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxLGwL8uY56Q8Cl1CBQotiZIzz6NdHRpxFjn4kyqybkL5Or9g34nSiurC1aZ8VTjM6iaQ/exec";
 const IMG = "https://prod-mercadona.imgix.net/images/";
 const $ = s => document.querySelector(s);
@@ -446,7 +456,8 @@ function leer(k, def) { try { const v = localStorage.getItem(k); return v ? JSON
 function guardar(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { aviso("No se ha podido guardar en este dispositivo"); return false; } }
 
 let D = leer("mc-datos", { items: {}, hab: {} });
-D.items ||= {}; D.hab ||= {};
+D.items ||= {}; D.hab ||= {}; D.fotos ||= {};
+const FOTO_LOCAL = {};
 let HIST = leer("mc-hist", {});
 let AJ = leer("mc-ajustes", { url: "", clave: "", tema: "auto", carro: true });
 if (!AJ.url) AJ.url = URL_SCRIPT;
@@ -706,6 +717,17 @@ const GRUPOS = [["pollo","Pollo"],["carne","Carne"],["pescado","Pescado y marisc
   ["huevo","Huevos y tortillas"],["verdura","Ensaladas y patatas"],["sopa","Sopas y guisos"],["rapida","Rápidas y bocadillos"],["postre","Postres"]];
 const GRUPO_DE = { pollo: "pollo", carne: "carne", pescado: "pescado", marisco: "pescado", pasta: "pasta", arroz: "arroz", legumbre: "legumbre",
   huevo: "huevo", verdura: "verdura", sopa: "sopa", rapida: "rapida", postre: "postre" };
+function fotoReceta(r, ancho = 800) {
+  if (FOTO_LOCAL[r.k]) return { src: FOTO_LOCAL[r.k], mia: true };
+  const m = D.fotos[r.k];
+  if (m && m.id) return { src: `https://lh3.googleusercontent.com/d/${m.id}=w${ancho}`, mia: true };
+  if (r.foto) return { src: r.foto, mia: false };
+  return null;
+}
+function miniReceta(r) {
+  const f = fotoReceta(r, 160);
+  return f ? `<img class="mini-rec" src="${esc(f.src)}" alt="" loading="lazy" decoding="async">` : `<span class="mini-rec vacia">${ico("r-" + r.g)}</span>`;
+}
 function renderRecetas() {
   const q = norm($("#busRec").value);
   $("#borRec").classList.toggle("oculto", !q);
@@ -729,7 +751,7 @@ function renderRecetas() {
       <span class="cuenta">${del.length}</span>${ico(abierto ? "i-arriba" : "i-abajo", "i chev")}</button>`;
     if (abierto) for (const [r, e] of del) {
       const ins = e.todo ? `<span class="insignia todo">Todo</span>` : e.n ? `<span class="insignia">${e.n} en lista</span>` : "";
-      h += `<button class="fila-rec" data-acc="receta" data-r="${r.id}"><span class="nom">${esc(r.n)}</span>${ins}<span class="min">${r.t} min</span></button>`;
+      h += `<button class="fila-rec" data-acc="receta" data-r="${r.id}">${miniReceta(r)}<span class="nom">${esc(r.n)}</span>${ins}<span class="min">${r.t} min</span></button>`;
     }
     h += `</div>`;
   }
@@ -738,7 +760,12 @@ function renderRecetas() {
 function fichaReceta(id) {
   const r = RECETAS.find(x => x.id === id); if (!r) return;
   const falta = r.ing.filter(i => !tengoIngr(i));
-  let h = `${portada(r, 140)}
+  const f = fotoReceta(r), puede = !!(AJ.url && AJ.clave);
+  const botonFoto = puede ? `<button class="btn-texto" data-acc="miFoto" data-k="${r.k}">${ico("i-camara")}${f && f.mia ? "Cambiar mi foto" : "Poner mi foto"}</button>` : "";
+  let h = (f ? `<img class="foto-rec" src="${esc(f.src)}" alt="${esc(r.n)}">
+      <div class="credito">${f.mia ? "<span>Tu foto</span>" + (puede ? `<button class="btn-texto" data-acc="quitarFoto" data-k="${r.k}" style="margin-left:0">Quitar</button>` : "")
+        : `<span>Foto: <a href="${esc(r.fp)}" target="_blank" rel="noopener">${esc(r.cred)}</a> · Wikimedia Commons</span>`}${botonFoto}</div>`
+      : `${portada(r, 140)}${botonFoto ? `<div class="credito">${botonFoto}</div>` : ""}`) + `
     <h2>${esc(r.n)}</h2><div class="meta" style="margin-bottom:6px"><span>${ico("i-reloj")}${r.t} min</span><span>${ico("i-gente")}${r.r} ${r.r > 1 ? "raciones" : "ración"}</span></div>
     <div class="h-sec">Ingredientes</div><div class="bloque">`;
   for (const i of r.ing) {
@@ -865,6 +892,33 @@ async function compartirLista() {
   } catch (e) { if (e.name === "AbortError") return; }
   window.open("https://wa.me/?text=" + encodeURIComponent(t), "_blank");
 }
+function elegirFoto(k) {
+  const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*";
+  inp.onchange = () => { const f = inp.files && inp.files[0]; if (f) subirFoto(k, f); };
+  inp.click();
+}
+async function subirFoto(k, archivo) {
+  try {
+    const img = await createImageBitmap(archivo);
+    const esc_ = Math.min(1, 1200 / Math.max(img.width, img.height));
+    const c = document.createElement("canvas"); c.width = Math.round(img.width * esc_); c.height = Math.round(img.height * esc_);
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    const datos = c.toDataURL("image/jpeg", 0.8);
+    FOTO_LOCAL[k] = datos; refrescarReceta(k); aviso("Subiendo la foto…");
+    const r = await fetch(AJ.url, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ clave: AJ.clave, accion: "foto", k, img: datos.split(",")[1] }) });
+    const j = await r.json(); if (!j.ok) throw new Error(j.error); if (!j.id) throw new Error("accion");
+    D.fotos[k] = { id: j.id, t: ahora() }; guardarDatos(); aviso("Foto guardada en tu Drive");
+  } catch (e) {
+    delete FOTO_LOCAL[k]; refrescarReceta(k);
+    aviso(e.message === "accion" ? "Actualiza el script de Google (versión nueva) para poder subir fotos" : "No se ha podido subir la foto");
+  }
+}
+function refrescarReceta(k) {
+  const r = RECETAS.find(x => x.k === k); if (!r) return;
+  if ($("#hoja").classList.contains("ver")) { const y = $("#hoja").scrollTop; fichaReceta(r.id); $("#hoja").scrollTop = y; }
+  if (estado.vista === "recetas") renderRecetas();
+}
 function aplicarTema() {
   if (AJ.tema === "auto") document.documentElement.removeAttribute("data-theme");
   else document.documentElement.setAttribute("data-theme", AJ.tema);
@@ -940,6 +994,8 @@ document.addEventListener("click", e => {
       selHab = new Set(); aviso(n ? `${n} añadido${n === 1 ? "" : "s"} a la lista` : "Ya estaban en la lista"); renderHabituales(); break;
     }
     case "grupo": { const g = b.dataset.g, a = new Set(AJ.abiertos || []); a.has(g) ? a.delete(g) : a.add(g); AJ.abiertos = [...a]; guardar("mc-ajustes", AJ); renderRecetas(); break; }
+    case "miFoto": elegirFoto(b.dataset.k); break;
+    case "quitarFoto": delete FOTO_LOCAL[b.dataset.k]; D.fotos[b.dataset.k] = { id: null, t: ahora() }; guardarDatos(); refrescarReceta(b.dataset.k); break;
     case "compartir": compartirLista(); break;
     case "ordenTienda": fichaOrden(); break;
     case "subir": moverSec(+b.dataset.z, -1); break;
@@ -1007,7 +1063,7 @@ async function sincronizar(manual) {
     }
     sinc.clavemala = false; guardar("mc-clave-mala", false);
     const o1 = D.orden, o2 = j.datos.orden;
-    D = { items: fusionar(D.items, j.datos.items), hab: fusionar(D.hab, j.datos.hab), orden: !o1 ? o2 : !o2 ? o1 : ((o2.t || 0) > (o1.t || 0) ? o2 : o1) };
+    D = { items: fusionar(D.items, j.datos.items), hab: fusionar(D.hab, j.datos.hab), fotos: fusionar(D.fotos, j.datos.fotos), orden: !o1 ? o2 : !o2 ? o1 : ((o2.t || 0) > (o1.t || 0) ? o2 : o1) };
     if (!D.orden) delete D.orden;
     guardar("mc-datos", D);
     sinc.estado = "ok"; sinc.msg = "Sincronizada · " + new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });

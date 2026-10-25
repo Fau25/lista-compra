@@ -3,7 +3,7 @@
 - scripts/fotos_elegidas.json (opcional): receta → "File:Nombre.jpg" para forzar una foto concreta.
 - Las recetas que ya tienen foto no se vuelven a buscar (borra la foto o pon REHACER=slug1,slug2).
 """
-import json, os, re, sys, time, unicodedata, urllib.parse, urllib.request
+import json, os, re, sys, time, unicodedata, urllib.error, urllib.parse, urllib.request
 
 API = "https://commons.wikimedia.org/w/api.php"
 UA = {"User-Agent": "MiCompra/1.0 (app personal; github.com/Fau25/lista-compra)"}
@@ -28,7 +28,7 @@ def limpiar(html):
 
 
 def candidatos(busqueda=None, archivo=None):
-    p = {"action": "query", "prop": "imageinfo", "iiprop": "url|extmetadata|mime|size", "iiurlwidth": "480"}
+    p = {"action": "query", "prop": "imageinfo", "iiprop": "url|extmetadata|mime|size", "iiurlwidth": "500"}
     if archivo:
         p["titles"] = archivo
     else:
@@ -50,6 +50,24 @@ def candidatos(busqueda=None, archivo=None):
         }
 
 
+REG = []
+
+
+def log(t):
+    print(t); REG.append(t)
+
+
+def descargar(url):
+    for intento in range(5):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60) as r:
+                return r.read()
+        except urllib.error.HTTPError as e:
+            if e.code in (429, 503) and intento < 4:
+                time.sleep(int(e.headers.get("Retry-After") or 0) or 5 * (intento + 1)); continue
+            raise
+
+
 def main():
     busquedas = json.load(open("scripts/fotos_busqueda.json", encoding="utf-8"))
     elegidas = json.load(open("scripts/fotos_elegidas.json", encoding="utf-8")) if os.path.exists("scripts/fotos_elegidas.json") else {}
@@ -66,18 +84,19 @@ def main():
         try:
             c = next(candidatos(archivo=elegidas[receta]) if receta in elegidas else candidatos(q), None)
             if not c:
-                print(f"  sin foto: {receta} ({q})"); fallos += 1; continue
-            req = urllib.request.Request(c["url"], headers=UA)
-            with urllib.request.urlopen(req, timeout=60) as r, open(destino, "wb") as f:
-                f.write(r.read())
+                log(f"sin foto: {receta} ({q})"); fallos += 1; continue
+            datos = descargar(c["url"])
+            with open(destino, "wb") as f:
+                f.write(datos)
             cred[s] = {"autor": c["autor"], "licencia": c["licencia"], "pagina": c["pagina"]}
             nuevas += 1
-            print(f"  ok: {receta}")
+            log(f"ok: {receta}")
         except Exception as e:
-            print(f"  error: {receta}: {e}", file=sys.stderr); fallos += 1
-        time.sleep(0.5)
+            log(f"error: {receta}: {e}"); fallos += 1
+        time.sleep(1.5)
     json.dump(cred, open(ruta_cred, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
-    print(f"{nuevas} fotos nuevas, {fallos} sin foto, {len(cred)} en total")
+    log(f"{nuevas} fotos nuevas, {fallos} sin foto, {len(cred)} en total")
+    open("scripts/fotos_registro.txt", "w", encoding="utf-8").write("\n".join(REG) + "\n")
 
 
 if __name__ == "__main__":

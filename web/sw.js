@@ -1,4 +1,4 @@
-const VERSION = "mi-compra-v7";
+const VERSION = "mi-compra-v8";
 const APP = ["./", "index.html", "manifest.json", "icono-180.png", "icono-192.png"];
 const DATOS = ["catalogo.json", "recetas.json"];
 
@@ -11,9 +11,9 @@ self.addEventListener("activate", e => {
 });
 self.addEventListener("fetch", e => {
   const r = e.request, u = new URL(r.url);
-  if (r.method !== "GET" || u.hostname.endsWith("script.google.com") || u.hostname.endsWith("googleusercontent.com")) return;
+  if (r.method !== "GET" || u.hostname.endsWith("script.google.com") || (u.hostname.endsWith("googleusercontent.com") && !u.hostname.startsWith("lh3."))) return;
   // Fotos de productos y fuentes: primero la copia guardada
-  if (u.hostname.includes("imgix.net") || u.hostname.includes("fonts.g")) {
+  if (u.hostname.includes("imgix.net") || u.hostname.includes("fonts.g") || u.hostname.startsWith("lh3.") || u.pathname.includes("/fotos/")) {
     e.respondWith(caches.open("mc-fotos").then(async c => {
       const hit = await c.match(r); if (hit) return hit;
       try { const res = await fetch(r); if (res.ok || res.type === "opaque") c.put(r, res.clone()); return res; }

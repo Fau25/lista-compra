@@ -53,7 +53,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git add web/catalogo.json web/recetas.json web/fotos
+          git add web/catalogo.json web/recetas.json web/fotos scripts/fotos_registro.txt
           git diff --cached --quiet || (git commit -m "Catálogo y fotos actualizados $(date +%F)" && git push)
 
       - uses: actions/configure-pages@v5
