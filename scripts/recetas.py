@@ -2,6 +2,8 @@
 import json, re, sys, unicodedata
 sys.path.insert(0, "scripts")
 from recetas_fuente import R
+from recetas_nuevas import N
+R = R + N
 
 def norm(s):
     s = unicodedata.normalize("NFD", (s or "").lower())

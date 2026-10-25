@@ -164,11 +164,25 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .banda{display:flex;align-items:center;gap:10px;background:var(--niebla);color:var(--sobre-niebla);border-radius:14px;padding:10px 14px;font-size:13px;margin-bottom:14px}
 .banda svg{width:18px;height:18px}
 .receta{display:block;width:100%;text-align:left;background:var(--sup);border-radius:18px;overflow:hidden;margin-bottom:14px}
-.portada{position:relative;height:120px;display:flex;align-items:center;justify-content:center;gap:0;background:var(--niebla)}
-.portada .ico-gr{position:absolute;left:14px;top:12px;color:var(--sobre-niebla);opacity:.55}
-.portada .ico-gr svg{width:26px;height:26px}
-.portada img,.portada .hueco{width:76px;height:76px;border-radius:50%;object-fit:cover;background:#fff;border:3px solid var(--sup);margin:0 -8px;box-shadow:var(--sombra)}
-.portada .hueco{display:grid;place-items:center;color:var(--pri)}
+.portada{position:relative;height:118px;display:flex;align-items:center;gap:16px;padding:0 18px;background:var(--niebla);overflow:hidden}
+.portada .dibujo{width:84px;height:84px;border-radius:50%;background:var(--sup);display:grid;place-items:center;color:var(--pri);flex:none;box-shadow:var(--sombra)}
+.portada .dibujo svg{width:44px;height:44px;stroke-width:1.3}
+.portada .fondo{position:absolute;right:-14px;bottom:-18px;color:var(--sobre-niebla);opacity:.09}
+.portada .fondo svg{width:130px;height:130px;stroke-width:1}
+.portada .ingrs{display:flex;flex-direction:column;gap:5px;min-width:0;position:relative}
+.portada .ingr-p{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sobre-niebla);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.portada .ingr-p img,.portada .ingr-p i{width:24px;height:24px;border-radius:50%;object-fit:cover;background:#fff;flex:none}
+.btn-icono{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--pri);background:var(--sup);flex:none}
+.btn-icono svg{width:20px;height:20px}
+.orden-f{display:flex;align-items:center;gap:12px;min-height:56px;border-bottom:.5px solid var(--linea)}
+.orden-f:last-child{border-bottom:0}
+.orden-f .n{width:22px;text-align:center;font-weight:700;color:var(--texto2);font-variant-numeric:tabular-nums}
+.orden-f button{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--niebla);color:var(--sobre-niebla)}
+.orden-f button:disabled{opacity:.3}
+.orden-f button svg{width:18px;height:18px}
+.sug{background:var(--sup2);border-radius:18px;padding:4px 8px 8px;margin-bottom:18px}
+.sug .tit-sec{margin:12px 6px 8px}
+.sug .fila{background:var(--sup)}
 .receta .cuerpo{padding:12px 16px 14px}
 .receta h3{margin:0 0 6px;font-size:18px;font-weight:600;line-height:1.3}
 .meta{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;font-size:13px;color:var(--texto2)}
@@ -310,6 +324,13 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
   <symbol id="r-postre" viewBox="0 0 24 24"><path d="M5 11h14l-1.5 9a2 2 0 0 1-2 1.7h-7a2 2 0 0 1-2-1.7ZM8 11a4 4 0 0 1 8 0M12 3v4"/></symbol>
   <symbol id="r-sopa" viewBox="0 0 24 24"><path d="M3 11h18a9 9 0 0 1-18 0ZM8 7c0-1 1-1 1-2s-1-1-1-2M12 7c0-1 1-1 1-2s-1-1-1-2M16 7c0-1 1-1 1-2s-1-1-1-2"/></symbol>
   <symbol id="r-legumbre" viewBox="0 0 24 24"><circle cx="8" cy="9" r="3.5"/><circle cx="16" cy="9" r="3.5"/><circle cx="12" cy="16" r="3.5"/></symbol>
+  <symbol id="r-pescado" viewBox="0 0 24 24"><path d="M2 12c3-4 7-6 11-6 4 0 7 2.5 9 6-2 3.5-5 6-9 6s-8-2-11-6ZM2 12l-.5-4M2 12l-.5 4"/><circle cx="16.5" cy="10.5" r=".8"/></symbol>
+  <symbol id="r-carne" viewBox="0 0 24 24"><path d="M14 3c3.9 0 7 3.1 7 7 0 3-1.7 5.4-4.3 6.5L10 20c-3 1.3-6.5-1-6.5-4.3 0-1.4.5-2.6 1.4-3.5L9 8c1.3-3 2.7-5 5-5Z"/><circle cx="14.5" cy="9.5" r="2"/></symbol>
+  <symbol id="r-verdura" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10ZM2 21c0-3 1.9-5.4 5.2-6"/></symbol>
+  <symbol id="r-marisco" viewBox="0 0 24 24"><path d="M12 21c-5 0-9-4-9-9 0-2 1-3 2-3 2 0 2 3 4 3s1-6 3-6 1 6 3 6 2-3 4-3c1 0 2 1 2 3 0 5-4 9-9 9ZM12 21v-6"/></symbol>
+  <symbol id="i-compartir" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></symbol>
+  <symbol id="i-abajo" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-orden" viewBox="0 0 24 24"><path d="M3 6h13M3 12h9M3 18h5M18 9V20M15 17l3 3 3-3"/></symbol>
   <symbol id="r-rapida" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></symbol>
 </svg>
 
@@ -399,7 +420,7 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
 
 <script>
 "use strict";
-const VERSION = "4";
+const VERSION = "5";
 const IMG = "https://prod-mercadona.imgix.net/images/";
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -415,6 +436,7 @@ function guardar(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); retur
 
 let D = leer("mc-datos", { items: {}, hab: {} });
 D.items ||= {}; D.hab ||= {};
+let HIST = leer("mc-hist", {});
 let AJ = leer("mc-ajustes", { url: "", clave: "", tema: "auto", carro: true });
 let CAT = { secciones: [], productos: [] }, PORID = new Map(), RECETAS = [];
 let estado = { vista: "lista", seccion: null, verN: 60, fRapidas: false, fMiLista: false };
@@ -466,6 +488,7 @@ function tocar(id, cambios) { D.items[id] = Object.assign({}, D.items[id], cambi
 
 function anadir(p, cant = 1, silencio) {
   const id = "p" + p.id, it = D.items[id];
+  if (!it || it.x) { const h = HIST[p.id] || { c: 0 }; HIST[p.id] = { c: h.c + 1, t: ahora(), n: p.n, f: p.f, i: p.i, z: p.z }; guardar("mc-hist", HIST); }
   if (it && !it.x) tocar(id, { q: (it.q || 1) + cant, h: false });
   else tocar(id, { p: p.id, n: p.n, f: p.f, i: p.i, z: p.z, q: cant, h: false, x: false });
   guardarDatos();
@@ -498,10 +521,16 @@ function quitarComprados() {
 }
 function porSeccion(lista) {
   const g = new Map();
-  lista.sort((a, b) => (a[1].z ?? 12) - (b[1].z ?? 12) || a[1].n.localeCompare(b[1].n, "es"));
+  lista.sort((a, b) => posSec(a[1].z) - posSec(b[1].z) || a[1].n.localeCompare(b[1].n, "es"));
   for (const e of lista) { const z = e[1].z ?? 12; if (!g.has(z)) g.set(z, []); g.get(z).push(e); }
   return g;
 }
+function ordenTienda() {
+  const n = (CAT.secciones.length || 13), v = (D.orden && Array.isArray(D.orden.v)) ? D.orden.v.filter(z => z < n) : [];
+  for (let z = 0; z < n; z++) if (!v.includes(z)) v.push(z);
+  return v;
+}
+function posSec(z) { const v = ordenTienda(), i = v.indexOf(z ?? 12); return i < 0 ? 99 : i; }
 const nomSec = z => CAT.secciones[z] || ["Fruta y verdura","Carne","Pescado","Charcutería y quesos","Lácteos y huevos","Panadería","Despensa","Platos preparados","Congelados","Bebidas","Limpieza y hogar","Mascotas","Otros"][z] || "Otros";
 
 function miniHTML(i, cls = "mini") {
@@ -523,6 +552,7 @@ function renderLista() {
   } else {
     const comp = AJ.url ? "Lista compartida" : "En este dispositivo";
     h += `<div class="resumen"><div class="num"><b>${pend.length} pendiente${pend.length === 1 ? "" : "s"}</b><span>${comp}</span></div>
+      <button class="btn-icono" data-acc="compartir" aria-label="Compartir la lista">${ico("i-compartir")}</button>
       <button class="btn-pri" data-acc="tienda">${ico("i-carro")}Modo tienda</button></div>`;
     for (const [z, filas] of porSeccion(pend)) {
       h += `<div class="tit-sec"><span>${esc(nomSec(z))}</span><span>${filas.length}</span></div>`;
@@ -620,8 +650,9 @@ function renderProductos() {
       if (!subs.has(p.z)) subs.set(p.z, new Set()); subs.get(p.z).add(p.c);
     }
     h += `<div class="tit-sec"><span>Todas las secciones</span><span>${CAT.secciones.length}</span></div><div class="lista-sec">`;
-    CAT.secciones.forEach((s, z) => {
-      if (!cuenta.get(z)) return;
+    ordenTienda().forEach(z => {
+      const s = CAT.secciones[z];
+      if (!s || !cuenta.get(z)) return;
       const sub = [...subs.get(z)].slice(0, 3).join(", ");
       h += `<button data-acc="seccion" data-z="${z}"><span class="ico-sec">${ico("s" + z)}</span>
         <span class="txt"><b>${esc(s)}</b><span>${esc(sub)}</span></span><span class="cuenta">${cuenta.get(z)}</span>${ico("i-der", "i chev")}</button>`;
@@ -653,10 +684,11 @@ function tengoIngr(ing) {
   return vivos().some(([, it]) => coincide(norm(it.n), q));
 }
 function estadoReceta(r) { const n = r.ing.filter(tengoIngr).length; return { n, todo: n === r.ing.length }; }
-function portada(r) {
-  const fotos = r.ing.map(i => PORID.get(i.pid)).filter(p => p && p.i).slice(0, 3);
-  return `<div class="portada"><span class="ico-gr">${ico("r-" + r.g)}</span>` +
-    (fotos.length ? fotos.map(p => `<img src="${esc(foto(p.i, 160))}" alt="" loading="lazy">`).join("") : `<span class="hueco">${ico("r-" + r.g)}</span>`) + `</div>`;
+function portada(r, alto) {
+  const ings = r.ing.slice(0, 3).map(i => { const p = PORID.get(i.pid);
+    return `<span class="ingr-p">${p && p.i ? `<img src="${esc(foto(p.i, 80))}" alt="" loading="lazy">` : "<i></i>"}${esc(i.n)}</span>`; }).join("");
+  return `<div class="portada"${alto ? ` style="height:${alto}px;border-radius:18px;margin:14px 0 16px"` : ""}>
+    <span class="fondo">${ico("r-" + r.g)}</span><span class="dibujo">${ico("r-" + r.g)}</span><span class="ingrs">${ings}</span></div>`;
 }
 function renderRecetas() {
   const q = norm($("#busRec").value);
@@ -680,7 +712,7 @@ function renderRecetas() {
 function fichaReceta(id) {
   const r = RECETAS.find(x => x.id === id); if (!r) return;
   const falta = r.ing.filter(i => !tengoIngr(i));
-  let h = `${portada(r).replace('class="portada"', 'class="portada" style="height:150px;border-radius:18px;margin:14px 0 16px"')}
+  let h = `${portada(r, 140)}
     <h2>${esc(r.n)}</h2><div class="meta" style="margin-bottom:6px"><span>${ico("i-reloj")}${r.t} min</span><span>${ico("i-gente")}${r.r} ${r.r > 1 ? "raciones" : "ración"}</span></div>
     <div class="h-sec">Ingredientes</div><div class="bloque">`;
   for (const i of r.ing) {
@@ -728,10 +760,21 @@ function alternarHabitual(pid) {
 
 /* ---------- Habituales ---------- */
 let selHab = new Set();
+function sugerencias() {
+  return Object.entries(HIST).filter(([pid, h]) => h.c >= 2 && !(D.hab[pid] && D.hab[pid].on) && !(D.hab[pid] && D.hab[pid].no > (h.t || 0)))
+    .sort((a, b) => b[1].c - a[1].c || b[1].t - a[1].t).slice(0, 6);
+}
+function sugerenciasHTML() {
+  const ss = sugerencias(); if (!ss.length) return "";
+  return `<div class="sug"><div class="tit-sec"><span>Lo añades a menudo</span><span>${ss.length}</span></div>` + ss.map(([pid, it]) =>
+    `<div class="fila">${miniHTML(it.i)}<span class="txt"><b>${esc(it.n)}</b><span>Añadido ${it.c} veces</span></span>
+      <button class="btn-mas" data-acc="sugNo" data-pid="${pid}" aria-label="No sugerir" style="background:transparent;color:var(--texto2)">${ico("i-x")}</button>
+      <button class="btn-mas" data-acc="sugSi" data-pid="${pid}" aria-label="Hacer habitual">${ico("i-corazon")}</button></div>`).join("") + `</div>`;
+}
 function renderHabituales() {
-  const hs = Object.entries(D.hab).filter(([, h]) => h.on).sort((a, b) => (a[1].z ?? 12) - (b[1].z ?? 12) || a[1].n.localeCompare(b[1].n, "es"));
-  let h = "";
-  if (!hs.length) { $("#cuerpoHab").innerHTML = `<div class="vacio">${ico("i-corazon")}<b>Aún no tienes habituales</b>Abre un producto y activa «Habitual» para tenerlo aquí y añadirlo de golpe.</div>`; return; }
+  const hs = Object.entries(D.hab).filter(([, h]) => h.on).sort((a, b) => posSec(a[1].z) - posSec(b[1].z) || a[1].n.localeCompare(b[1].n, "es"));
+  let h = sugerenciasHTML();
+  if (!hs.length) { $("#cuerpoHab").innerHTML = h + `<div class="vacio">${ico("i-corazon")}<b>Aún no tienes habituales</b>Abre un producto y activa «Habitual», o acepta las sugerencias de arriba cuando aparezcan.</div>`; return; }
   for (const id of [...selHab]) if (!D.hab[id]?.on) selHab.delete(id);
   h += `<div class="resumen"><div class="num"><b>${hs.length} habitual${hs.length === 1 ? "" : "es"}</b><span>${selHab.size} seleccionado${selHab.size === 1 ? "" : "s"}</span></div>
     <button class="btn-texto" data-acc="selTodos">${selHab.size === hs.length ? "Ninguno" : "Todos"}</button></div>`;
@@ -759,6 +802,8 @@ function fichaAjustes() {
       <input class="campo" id="ajClave" type="password" value="${esc(AJ.clave)}" autocomplete="current-password">
       <p class="estado-s ${sinc.estado === "mal" ? "mal" : ""}" id="ajEstado">${esc(sinc.msg || est)}</p>
       <button class="btn-pri ancho" data-acc="guardarSinc">Guardar y sincronizar</button></div>
+    <div class="h-sec">Mi tienda</div><div class="bloque"><button class="linea-aj" style="width:100%;text-align:left" data-acc="ordenTienda">
+      <span class="ico-sec">${ico("i-orden")}</span><span class="txt"><b>Orden de las secciones</b><span>Como recorres tu Mercadona</span></span>${ico("i-der", "i chev")}</button></div>
     <div class="h-sec">Catálogo</div><div class="bloque">
       <div class="linea-aj"><span class="txt"><b>Código postal</b></span><span class="cuenta">${esc(CAT.cp || "04230")}</span></div>
       <div class="linea-aj"><span class="txt"><b>Productos</b></span><span class="cuenta">${CAT.productos.length.toLocaleString("es-ES")}</span></div>
@@ -766,6 +811,33 @@ function fichaAjustes() {
     <div class="h-sec">Apariencia</div><div class="segmento" role="radiogroup">
       ${[["auto","Automático"],["light","Claro"],["dark","Oscuro"]].map(([k, t]) => `<button role="radio" aria-checked="${AJ.tema === k}" class="${AJ.tema === k ? "on" : ""}" data-acc="tema" data-t="${k}">${t}</button>`).join("")}</div>
     <p class="nota" style="margin-top:18px">Recetas sencillas incluidas: ${RECETAS.length}.</p>`, "ajustes");
+}
+function fichaOrden() {
+  const v = ordenTienda();
+  abrirHoja(`<h2 style="margin-top:14px">Orden de mi tienda</h2><div class="sub">La lista y el modo tienda te enseñan las secciones en este orden.</div>
+    <div class="bloque">` + v.map((z, i) => `<div class="orden-f"><span class="n">${i + 1}</span><span class="ico-sec">${ico("s" + z)}</span>
+      <span class="txt"><b>${esc(nomSec(z))}</b></span>
+      <button data-acc="subir" data-z="${z}" aria-label="Subir ${esc(nomSec(z))}" ${i ? "" : "disabled"}>${ico("i-arriba")}</button>
+      <button data-acc="bajar" data-z="${z}" aria-label="Bajar ${esc(nomSec(z))}" ${i < v.length - 1 ? "" : "disabled"}>${ico("i-abajo")}</button></div>`).join("") +
+    `</div><button class="btn-sec" style="width:100%" data-acc="ordenReset">Volver al orden normal</button>`, "orden");
+}
+function moverSec(z, d) {
+  const v = ordenTienda(), i = v.indexOf(z), j = i + d; if (j < 0 || j >= v.length) return;
+  [v[i], v[j]] = [v[j], v[i]]; D.orden = { v, t: ahora() }; guardarDatos();
+  const y = $("#hoja").scrollTop; fichaOrden(); $("#hoja").scrollTop = y;
+}
+async function compartirLista() {
+  const pend = vivos().filter(([, it]) => !it.h);
+  if (!pend.length) return aviso("No hay nada pendiente que compartir");
+  let t = `Lista de la compra (${pend.length})\n`;
+  for (const [z, filas] of porSeccion(pend)) {
+    t += `\n${nomSec(z).toUpperCase()}\n`;
+    for (const [, it] of filas) t += `• ${it.n}${(it.q || 1) > 1 ? " × " + it.q : ""}\n`;
+  }
+  try {
+    if (navigator.share) { await navigator.share({ text: t }); return; }
+  } catch (e) { if (e.name === "AbortError") return; }
+  window.open("https://wa.me/?text=" + encodeURIComponent(t), "_blank");
 }
 function aplicarTema() {
   if (AJ.tema === "auto") document.documentElement.removeAttribute("data-theme");
@@ -782,6 +854,7 @@ function abrirHoja(html, tipo = null) {
   document.body.style.overflow = "hidden";
 }
 function cerrarHoja() {
+  if (hojaTipo === "orden") setTimeout(render, 0);
   hojaTipo = null; $("#velo").classList.remove("ver"); $("#hoja").classList.remove("ver"); $("#hoja").setAttribute("aria-hidden", "true");
   setTimeout(() => $("#velo").classList.add("oculto"), 230);
   if ($("#tienda").classList.contains("oculto")) document.body.style.overflow = "";
@@ -840,6 +913,13 @@ document.addEventListener("click", e => {
       let n = 0; for (const k of selHab) { const h = D.hab[k], p = PORID.get(k) || { id: k, n: h.n, f: h.f, i: h.i, z: h.z }; if (!enLista(k)) { anadir(p, 1, true); n++; } }
       selHab = new Set(); aviso(n ? `${n} añadido${n === 1 ? "" : "s"} a la lista` : "Ya estaban en la lista"); renderHabituales(); break;
     }
+    case "compartir": compartirLista(); break;
+    case "ordenTienda": fichaOrden(); break;
+    case "subir": moverSec(+b.dataset.z, -1); break;
+    case "bajar": moverSec(+b.dataset.z, 1); break;
+    case "ordenReset": D.orden = { v: [], t: ahora() }; guardarDatos(); fichaOrden(); break;
+    case "sugSi": { const h = HIST[pid]; D.hab[pid] = { on: true, t: ahora(), n: h.n, f: h.f, i: h.i, z: h.z }; guardarDatos(); aviso("Añadido a habituales"); renderHabituales(); break; }
+    case "sugNo": { const h = HIST[pid]; D.hab[pid] = { on: false, no: ahora(), t: ahora(), n: h.n, f: h.f, i: h.i, z: h.z }; guardarDatos(); renderHabituales(); break; }
     case "tema": AJ.tema = b.dataset.t; guardar("mc-ajustes", AJ); aplicarTema(); fichaAjustes(); break;
     case "guardarSinc": AJ.url = $("#ajUrl").value.trim(); AJ.clave = $("#ajClave").value; guardar("mc-ajustes", AJ); sinc.clavemala = false; sincronizar(true); break;
   }
@@ -899,7 +979,9 @@ async function sincronizar(manual) {
       throw new Error(j.error === "clave" ? "Contraseña incorrecta: revísala en Ajustes." : j.error === "bloqueado" ? "Demasiados intentos. Espera 10 minutos." : "Error del script: " + j.error);
     }
     sinc.clavemala = false; guardar("mc-clave-mala", false);
-    D = { items: fusionar(D.items, j.datos.items), hab: fusionar(D.hab, j.datos.hab) };
+    const o1 = D.orden, o2 = j.datos.orden;
+    D = { items: fusionar(D.items, j.datos.items), hab: fusionar(D.hab, j.datos.hab), orden: !o1 ? o2 : !o2 ? o1 : ((o2.t || 0) > (o1.t || 0) ? o2 : o1) };
+    if (!D.orden) delete D.orden;
     guardar("mc-datos", D);
     sinc.estado = "ok"; sinc.msg = "Sincronizada · " + new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
     render();
