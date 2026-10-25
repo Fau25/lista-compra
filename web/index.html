@@ -60,7 +60,12 @@ header.cab{position:sticky;top:0;z-index:20;background:var(--vidrio);backdrop-fi
 @keyframes latir{50%{opacity:.35}}
 .btn-perfil{width:40px;height:40px;border-radius:50%;background:var(--pri-fuerte);color:#fff;display:grid;place-items:center}
 .btn-perfil svg{width:20px;height:20px}
-.btn-sinc{display:flex;align-items:center;gap:10px;padding:6px}
+.btn-sinc{display:flex;align-items:center;gap:8px;padding:6px}
+.txt-sinc{font-size:12px;font-weight:600;color:var(--texto2);white-space:nowrap}
+.txt-sinc.ok{color:var(--pri)}
+.txt-sinc.mal{color:var(--error)}
+.txt-sinc.recien{animation:brillo 1.6s ease}
+@keyframes brillo{0%{opacity:0;transform:translateY(-3px)}20%{opacity:1;transform:none}}
 
 /* Buscador */
 .buscador{position:relative;margin:4px 0 16px}
@@ -358,7 +363,7 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
   <div class="envoltura">
     <h1 id="titulo">Lista</h1>
     <button class="btn-sinc" id="btnAjustes" aria-label="Ajustes y sincronización">
-      <span class="punto" id="punto"></span>
+      <span class="txt-sinc" id="txtSinc"></span><span class="punto" id="punto"></span>
       <span class="btn-perfil"><svg class="i"><use href="#i-persona"/></svg></span>
     </button>
   </div>
@@ -440,7 +445,7 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
 
 <script>
 "use strict";
-const VERSION = "8";
+const VERSION = "9";
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxLGwL8uY56Q8Cl1CBQotiZIzz6NdHRpxFjn4kyqybkL5Or9g34nSiurC1aZ8VTjM6iaQ/exec";
 const IMG = "https://prod-mercadona.imgix.net/images/";
 const $ = s => document.querySelector(s);
@@ -1033,7 +1038,12 @@ $("#fMiLista").addEventListener("click", () => { estado.fMiLista = !estado.fMiLi
 
 /* ---------- Sincronización ---------- */
 const sinc = { estado: "", msg: "", t: null, enCurso: false, clavemala: leer("mc-clave-mala", false) };
-function pintarPunto() { $("#punto").className = "punto " + (sinc.estado || ""); }
+function pintarPunto() {
+  $("#punto").className = "punto " + (sinc.estado || "");
+  const t = $("#txtSinc"), hora = sinc.hora ? " · " + sinc.hora : "";
+  t.textContent = !AJ.clave ? "" : sinc.estado === "pend" ? "Sincronizando…" : sinc.estado === "ok" ? "Sincronizado" + hora : sinc.estado === "mal" ? "Sin conexión" : "";
+  t.className = "txt-sinc " + (sinc.estado === "ok" ? "ok" : sinc.estado === "mal" ? "mal" : "");
+}
 function fusionar(a, b) {
   const r = {}; for (const k of new Set([...Object.keys(a || {}), ...Object.keys(b || {})])) {
     const x = a?.[k], y = b?.[k]; r[k] = !x ? y : !y ? x : ((y.t || 0) > (x.t || 0) ? y : x);
@@ -1063,10 +1073,17 @@ async function sincronizar(manual) {
     }
     sinc.clavemala = false; guardar("mc-clave-mala", false);
     const o1 = D.orden, o2 = j.datos.orden;
+    const antes = JSON.stringify([D.items, D.hab, D.fotos || {}, D.orden || null]);
     D = { items: fusionar(D.items, j.datos.items), hab: fusionar(D.hab, j.datos.hab), fotos: fusionar(D.fotos, j.datos.fotos), orden: !o1 ? o2 : !o2 ? o1 : ((o2.t || 0) > (o1.t || 0) ? o2 : o1) };
     if (!D.orden) delete D.orden;
     guardar("mc-datos", D);
-    sinc.estado = "ok"; sinc.msg = "Sincronizada · " + new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+    sinc.hora = new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+    sinc.estado = "ok"; sinc.msg = "Sincronizada · " + sinc.hora;
+    const cambio = antes !== JSON.stringify([D.items, D.hab, D.fotos || {}, D.orden || null]);
+    if (cambio && sinc.yaUna) aviso("Lista actualizada con los cambios del otro dispositivo");
+    else if (manual) aviso("Sincronizado");
+    sinc.yaUna = true;
+    $("#txtSinc").classList.remove("recien"); void $("#txtSinc").offsetWidth; setTimeout(() => $("#txtSinc").classList.add("recien"), 0);
     render();
   } catch (e) {
     sinc.estado = "mal"; sinc.msg = e.message && !/fetch|json|network/i.test(e.message) ? e.message : "Sin conexión con Google (se reintentará).";
