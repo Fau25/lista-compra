@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mi Compra</title>
 <meta name="theme-color" content="#F5F1E8" media="(prefers-color-scheme: light)">
@@ -445,7 +446,7 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
 
 <script>
 "use strict";
-const VERSION = "13";
+const VERSION = "14";
 const CON_RECETAS = false; // recetas ocultas (25/10/2026); poner true para volver a mostrarlas
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxLGwL8uY56Q8Cl1CBQotiZIzz6NdHRpxFjn4kyqybkL5Or9g34nSiurC1aZ8VTjM6iaQ/exec";
 const IMG = "https://prod-mercadona.imgix.net/images/";
@@ -1075,14 +1076,15 @@ async function sincronizar(manual) {
   sinc.enCurso = true; sinc.estado = "pend"; pintarPunto();
   try {
     limpiar();
+    const inicio = ahora();
     const r = await fetch(AJ.url, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ clave: AJ.clave, datos: D }) });
+      body: JSON.stringify({ clave: AJ.clave, datos: D, ultima: leer("mc-ultima-sinc", 0) }) });
     const j = await r.json();
     if (!j.ok) {
       if (j.error === "clave") { sinc.clavemala = true; guardar("mc-clave-mala", true); }
       throw new Error(j.error === "clave" ? "Contraseña incorrecta: revísala en Ajustes." : j.error === "bloqueado" ? "Demasiados intentos. Espera 10 minutos." : "Error del script: " + j.error);
     }
-    sinc.clavemala = false; guardar("mc-clave-mala", false);
+    sinc.clavemala = false; guardar("mc-clave-mala", false); guardar("mc-ultima-sinc", inicio);
     const o1 = D.orden, o2 = j.datos.orden;
     const antes = JSON.stringify([D.items, D.hab, D.fotos || {}, D.orden || null]);
     D = { items: fusionar(D.items, j.datos.items), hab: fusionar(D.hab, j.datos.hab), fotos: fusionar(D.fotos, j.datos.fotos), orden: !o1 ? o2 : !o2 ? o1 : ((o2.t || 0) > (o1.t || 0) ? o2 : o1) };
@@ -1103,7 +1105,7 @@ async function sincronizar(manual) {
     if (hojaTipo === "ajustes" && $("#ajEstado")) { $("#ajEstado").textContent = sinc.msg; $("#ajEstado").classList.toggle("mal", sinc.estado === "mal"); }
   }
 }
-setInterval(() => { if (document.visibilityState === "visible" && AJ.url && AJ.clave && !sinc.t) sincronizar(); }, 20000);
+setInterval(() => { if (document.visibilityState === "visible" && AJ.url && AJ.clave && !sinc.t) sincronizar(); }, 45000);
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") sincronizar(); });
 
 /* ---------- Arranque ---------- */

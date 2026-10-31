@@ -44,7 +44,10 @@ jobs:
 
       - name: Fotos libres de las recetas
         if: steps.catalogo.outcome == 'success'
-        run: python scripts/fotos.py && python scripts/recetas.py
+        run: |
+          # Las fotos de recetas solo se buscan si las recetas están visibles en la app
+          if grep -q "CON_RECETAS = true" web/index.html; then python scripts/fotos.py; fi
+          python scripts/recetas.py
         env:
           REHACER: ${{ github.event.inputs.rehacer }}
 
