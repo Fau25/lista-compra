@@ -1,4 +1,4 @@
-const VERSION = "mi-compra-v14";
+const VERSION = "mi-compra-v15";
 const APP = ["./", "index.html", "manifest.json", "icono-180.png", "icono-192.png", "tienda.html", "manifest-tienda.json", "tienda-180.png"];
 const DATOS = ["catalogo.json"];
 

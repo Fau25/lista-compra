@@ -304,6 +304,27 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
 .aviso button{color:var(--niebla);font-weight:700}
 :root[data-theme="dark"] .aviso button{color:var(--pri-fuerte)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* Escritorio: tu lista · catálogo · habituales (desde 1280 px en 3 columnas; de 1024 a 1279, habituales bajo la lista) */
+@media (min-width:1024px){
+  nav.menu{display:none}
+  .cab .envoltura{max-width:1520px;padding:0 28px}
+  main{padding:8px 28px 32px;max-width:1520px;margin:0 auto;display:grid;grid-template-columns:400px minmax(0,1fr);grid-template-areas:"lista prod" "hab prod";gap:20px 24px;align-items:start}
+  main .vista{display:block!important}
+  #v-lista{grid-area:lista}#v-productos{grid-area:prod}#v-habituales{grid-area:hab}
+  main .vista>.envoltura{max-width:none;padding:0}
+  #v-lista,#v-habituales{background:var(--sup);border-radius:22px;padding:18px}
+  #v-lista::before,#v-productos::before,#v-habituales::before{display:block;font-size:19px;font-weight:800;margin:0 2px 12px}
+  #v-lista::before{content:"Tu lista"}#v-productos::before{content:"Catálogo"}#v-habituales::before{content:"Habituales"}
+  .rejilla{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hoja{bottom:auto;top:50%;left:50%;right:auto;width:min(620px,calc(100vw - 48px));border-radius:24px;transform:translate(-50%,-46%);opacity:0;max-height:86vh;transition:transform .2s,opacity .2s}
+  .hoja.ver{transform:translate(-50%,-50%);opacity:1}
+  .hoja .asa{display:none}
+  button,[data-acc]{cursor:pointer}
+}
+@media (min-width:1280px){
+  main{grid-template-columns:400px minmax(0,1fr) 320px;grid-template-areas:"lista prod hab"}
+}
+@media (min-width:1600px){ .rejilla{grid-template-columns:repeat(4,minmax(0,1fr))} }
 </style>
 </head>
 <body>
@@ -446,7 +467,7 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
 
 <script>
 "use strict";
-const VERSION = "14";
+const VERSION = "15";
 const CON_RECETAS = false; // recetas ocultas (25/10/2026); poner true para volver a mostrarlas
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxLGwL8uY56Q8Cl1CBQotiZIzz6NdHRpxFjn4kyqybkL5Or9g34nSiurC1aZ8VTjM6iaQ/exec";
 const IMG = "https://prod-mercadona.imgix.net/images/";
@@ -588,7 +609,7 @@ function renderLista() {
   const todos = vivos(), pend = todos.filter(([, it]) => !it.h), hechos = todos.filter(([, it]) => it.h);
   let h = "";
   if (!todos.length) {
-    h = `<div class="vacio">${ico("i-lista")}<b>Tu lista está vacía</b>Busca arriba un producto, o añádelos desde Productos, Recetas o Habituales.</div>`;
+    h = `<div class="vacio">${ico("i-lista")}<b>Tu lista está vacía</b>Busca arriba un producto, o añádelos desde ${CON_RECETAS ? "Productos, Recetas o Habituales" : "Productos o Habituales"}.</div>`;
   } else {
     const comp = AJ.url && AJ.clave ? "Lista compartida" : "En este dispositivo";
     h += `<div class="resumen"><div class="num"><b>${pend.length} pendiente${pend.length === 1 ? "" : "s"}</b><span>${comp}</span></div>
@@ -964,17 +985,25 @@ function aviso(txt, fn) {
 
 /* ---------- Navegación y render ---------- */
 const TIT = { lista: "Lista", productos: "Productos", recetas: "Recetas", habituales: "Habituales" };
+/* Escritorio (desde 1024 px): lista, catálogo y habituales a la vez */
+const MQ = matchMedia("(min-width:1024px)");
+const verVista = v => MQ.matches || estado.vista === v;
+MQ.addEventListener("change", () => { $("#titulo").textContent = MQ.matches ? "Mi Compra" : TIT[estado.vista]; render(); });
+document.addEventListener("keydown", e => {
+  if (!MQ.matches || e.key !== "/" || /INPUT|TEXTAREA/.test(document.activeElement.tagName) || $("#hoja").classList.contains("ver")) return;
+  e.preventDefault(); $("#busProd").focus();
+});
 function irA(v) {
-  estado.vista = v; $("#titulo").textContent = TIT[v];
+  estado.vista = v; $("#titulo").textContent = MQ.matches ? "Mi Compra" : TIT[v];
   document.querySelectorAll(".vista").forEach(s => s.classList.toggle("activa", s.id === "v-" + v));
   document.querySelectorAll("nav.menu button").forEach(b => b.dataset.v === v ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   window.scrollTo(0, 0); render();
 }
 function render() {
-  if (estado.vista === "lista") { renderLista(); renderResLista(); }
-  if (estado.vista === "productos") renderProductos();
+  if (verVista("lista")) { renderLista(); renderResLista(); }
+  if (verVista("productos")) renderProductos();
   if (estado.vista === "recetas") renderRecetas();
-  if (estado.vista === "habituales") renderHabituales();
+  if (verVista("habituales")) renderHabituales();
   if (!$("#tienda").classList.contains("oculto")) renderTienda();
   if (hojaTipo && hojaTipo.startsWith("producto:")) refrescarFicha();
 }
@@ -1002,7 +1031,7 @@ document.addEventListener("click", e => {
     case "verMas": estado.verN += 60; renderProductos(); break;
     case "receta": fichaReceta(b.dataset.r); $("#hoja").scrollTop = 0; break;
     case "faltan": anadirFaltan(b.dataset.r); break;
-    case "habitual": alternarHabitual(pid); b.setAttribute("aria-checked", !!D.hab[pid].on); if (estado.vista === "habituales") renderHabituales(); break;
+    case "habitual": alternarHabitual(pid); b.setAttribute("aria-checked", !!D.hab[pid].on); if (verVista("habituales")) renderHabituales(); break;
     case "selHab": selHab.has(pid) ? selHab.delete(pid) : selHab.add(pid); renderHabituales(); break;
     case "selTodos": { const hs = Object.keys(D.hab).filter(k => D.hab[k].on); selHab = selHab.size === hs.length ? new Set() : new Set(hs); renderHabituales(); break; }
     case "quitarHab": alternarHabitual(pid); selHab.delete(pid); renderHabituales(); break;
@@ -1110,6 +1139,7 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
 
 /* ---------- Arranque ---------- */
 if (!CON_RECETAS) { document.querySelector('nav.menu [data-v="recetas"]')?.remove(); $("#v-recetas")?.remove(); }
+if (MQ.matches) $("#titulo").textContent = "Mi Compra";
 aplicarTema(); pintarPunto(); render(); cargar(); sincronizar();
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 </script>
