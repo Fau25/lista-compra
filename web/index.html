@@ -5,17 +5,14 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mi Compra</title>
-<meta name="theme-color" content="#F5F1E8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1A201C" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F3EEF1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Mi Compra">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icono-180.png">
 <link rel="icon" href="icono-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,300..800&display=swap" rel="stylesheet">
+<link rel="preload" href="fuentes/sora-600.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 :root{
   --bg:#F5F1E8; --sup:#FFFFFF; --sup2:#EFEADF; --texto:#1F2A24; --texto2:#6A675E;
@@ -325,6 +322,63 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
   main{grid-template-columns:400px minmax(0,1fr) 320px;grid-template-areas:"lista prod hab"}
 }
 @media (min-width:1600px){ .rejilla{grid-template-columns:repeat(4,minmax(0,1fr))} }
+
+/* ======================= v16 · ESTILO «AURORA · ALBA» (el mismo que el resto de apps) =======================
+   Fondo claro con brumas lavanda, menta y melocotón; cristal blanco; todo en Sora con jerarquía por pesos;
+   acento melocotón mate en lo activo y lavanda para textos de acción. Siempre claro (se quitó «Apariencia»). */
+@font-face{font-family:"Sora";src:url("fuentes/sora-400.woff2") format("woff2");font-weight:300 400;font-display:swap}
+@font-face{font-family:"Sora";src:url("fuentes/sora-500.woff2") format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Sora";src:url("fuentes/sora-600.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Sora";src:url("fuentes/sora-700.woff2") format("woff2");font-weight:700 900;font-display:swap}
+:root,:root:root,:root[data-theme],:root:not([data-theme="light"]){
+  --bg:#F3EEF1; --sup:rgba(255,255,255,.62); --sup2:rgba(255,255,255,.42); --texto:#2A2433; --texto2:#857D92;
+  --pri:#6F5CC4; --pri-fuerte:#FFCBB3; --sobre-pri:#2A2433; --niebla:rgba(211,198,255,.45); --sobre-niebla:#2A2433;
+  --linea:rgba(42,36,51,.09); --casilla:rgba(42,36,51,.24); --vidrio:rgba(243,238,241,.8);
+  --sombra:0 10px 30px rgba(120,100,140,.10); --aviso:#C08A2E; --error:#B9503F; --borde:1px solid rgba(255,255,255,.95);
+  color-scheme:light;
+}
+html{background:#F3EEF1}
+body{font-family:"Sora",system-ui,-apple-system,sans-serif;letter-spacing:-.01em;background:radial-gradient(60% 40% at 8% 4%,rgba(190,172,255,.5),transparent 70%),radial-gradient(50% 35% at 96% 22%,rgba(160,226,205,.4),transparent 70%),radial-gradient(55% 40% at 70% 102%,rgba(255,186,164,.45),transparent 70%),#F3EEF1;background-attachment:fixed}
+.cab h1,.cab-tienda h2{font-weight:600;letter-spacing:-.04em}
+.hoja h2,.cab-seccion b{font-weight:600;letter-spacing:-.03em}
+.txt b,.tarjeta .nom,.f-tienda .txt b{letter-spacing:-.015em}
+.f-tienda .txt b{font-weight:500}
+/* cristal */
+.buscador input,.fila,.lista-sec,.cab-seccion,.tarjeta,.grupo,.bloque,.carro,.resumen,.sug,.receta,.f-tienda,.progreso .caja,.chip-f{border:var(--borde);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.carro .fila{border:0;-webkit-backdrop-filter:none;backdrop-filter:none}
+.buscador .lupa,.buscador .borrar{z-index:1}
+header.cab,nav.menu{background:rgba(255,255,255,.62);border-color:rgba(255,255,255,.95)}
+header.cab{border-bottom:var(--borde)}
+nav.menu{border-top:var(--borde)}
+.hoja,#tienda{background:#FBF8FA}
+#tienda{background:radial-gradient(60% 40% at 8% 4%,rgba(190,172,255,.45),transparent 70%),radial-gradient(55% 40% at 70% 102%,rgba(255,186,164,.4),transparent 70%),#F7F2F5}
+.velo{background:rgba(90,76,110,.25)}
+.casilla{background:rgba(255,255,255,.7)}
+.buscador input:focus{box-shadow:0 0 0 1.5px #B9A9F0}
+.campo{background:rgba(255,255,255,.7)}
+.campo:focus{border-color:#B9A9F0}
+.tarjeta img,.tarjeta .sinfoto,.foto-grande{background:#fff}
+/* iconos en baldosa pastel */
+.ico-sec{background:linear-gradient(135deg,#D3C6FF,#B5E9D8);color:var(--texto)}
+.lista-sec button:nth-child(3n+2) .ico-sec{background:linear-gradient(135deg,#FFC9B8,#D3C6FF)}
+.lista-sec button:nth-child(3n) .ico-sec{background:linear-gradient(135deg,#B5E9D8,#F8E7B0)}
+.btn-perfil{background:linear-gradient(135deg,#D3C6FF,#B5E9D8);color:var(--texto)}
+/* lo activo en melocotón */
+.btn-mas.en,.chip-f.on,.insignia.todo,.hecho .casilla,.ingr.tengo .marca{background:var(--pri-fuerte);border-color:var(--pri-fuerte);color:var(--texto)}
+.interruptor[aria-checked="true"]{background:#FFB394}
+.segmento{background:rgba(255,255,255,.5);border:var(--borde)}
+.segmento button.on{background:var(--pri-fuerte);color:var(--texto)}
+.barra{background:rgba(42,36,51,.08)}
+.barra i{background:linear-gradient(90deg,#D3C6FF,#FFCBB3)}
+nav.menu button[aria-current="page"]{color:var(--texto)}
+nav.menu button[aria-current="page"]::after{width:22px;height:4px;border-radius:2px;background:#FFB394}
+.punto.ok{background:#3E9A7A}
+.aviso{background:var(--texto);color:#fff}
+.aviso button{color:#FFCBB3}
+@media (min-width:1024px){
+  #v-lista,#v-habituales{background:rgba(255,255,255,.5);border:var(--borde);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+  #v-lista::before,#v-productos::before,#v-habituales::before{font-weight:600;letter-spacing:-.03em}
+}
 </style>
 </head>
 <body>
@@ -467,7 +521,7 @@ nav.menu button[aria-current="page"]::after{content:"";position:absolute;bottom:
 
 <script>
 "use strict";
-const VERSION = "15";
+const VERSION = "16";
 const CON_RECETAS = false; // recetas ocultas (25/10/2026); poner true para volver a mostrarlas
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxLGwL8uY56Q8Cl1CBQotiZIzz6NdHRpxFjn4kyqybkL5Or9g34nSiurC1aZ8VTjM6iaQ/exec";
 const IMG = "https://prod-mercadona.imgix.net/images/";
@@ -899,8 +953,6 @@ function fichaAjustes() {
       <div class="linea-aj"><span class="txt"><b>Código postal</b></span><span class="cuenta">${esc(CAT.cp || "04230")}</span></div>
       <div class="linea-aj"><span class="txt"><b>Productos</b></span><span class="cuenta">${CAT.productos.length.toLocaleString("es-ES")}</span></div>
       <div class="linea-aj"><span class="txt"><b>Actualizado</b></span><span class="cuenta">${esc(fecha)}</span></div></div>
-    <div class="h-sec">Apariencia</div><div class="segmento" role="radiogroup">
-      ${[["auto","Automático"],["light","Claro"],["dark","Oscuro"]].map(([k, t]) => `<button role="radio" aria-checked="${AJ.tema === k}" class="${AJ.tema === k ? "on" : ""}" data-acc="tema" data-t="${k}">${t}</button>`).join("")}</div>
     ${CON_RECETAS ? `<p class="nota" style="margin-top:18px">Recetas sencillas incluidas: ${RECETAS.length}.</p>` : ""}`, "ajustes");
 }
 function fichaOrden() {
@@ -957,10 +1009,7 @@ function refrescarReceta(k) {
   if ($("#hoja").classList.contains("ver")) { const y = $("#hoja").scrollTop; fichaReceta(r.id); $("#hoja").scrollTop = y; }
   if (estado.vista === "recetas") renderRecetas();
 }
-function aplicarTema() {
-  if (AJ.tema === "auto") document.documentElement.removeAttribute("data-theme");
-  else document.documentElement.setAttribute("data-theme", AJ.tema);
-}
+function aplicarTema() { document.documentElement.removeAttribute("data-theme"); }   // estilo Alba: siempre claro
 
 /* ---------- Hoja y aviso ---------- */
 let hojaTipo = null;

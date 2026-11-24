@@ -1,12 +1,12 @@
-const VERSION = "mi-compra-v15";
-const APP = ["./", "index.html", "manifest.json", "icono-180.png", "icono-192.png", "tienda.html", "manifest-tienda.json", "tienda-180.png"];
+const VERSION = "mi-compra-v16";
+const APP = ["./", "index.html", "manifest.json", "icono-180.png", "icono-192.png", "tienda.html", "manifest-tienda.json", "tienda-180.png", "fuentes/sora-400.woff2", "fuentes/sora-500.woff2", "fuentes/sora-600.woff2", "fuentes/sora-700.woff2"];
 const DATOS = ["catalogo.json"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(APP.concat(DATOS))).then(() => self.skipWaiting()));
 });
 self.addEventListener("activate", e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION && k !== "mc-fotos").map(k => caches.delete(k))))
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith("mi-compra-") && k !== VERSION).map(k => caches.delete(k))))
     .then(() => self.clients.claim()));
 });
 self.addEventListener("fetch", e => {
