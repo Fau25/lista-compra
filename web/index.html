@@ -379,6 +379,17 @@ nav.menu button[aria-current="page"]::after{width:22px;height:4px;border-radius:
   #v-lista,#v-habituales{background:rgba(255,255,255,.5);border:var(--borde);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
   #v-lista::before,#v-productos::before,#v-habituales::before{font-weight:600;letter-spacing:-.03em}
 }
+/* Menú común de Mis apps: píldora de cristal centrada, icono + nombre, la activa en melocotón */
+nav.menu{left:50%;right:auto;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);padding:5px;border-radius:999px;
+  background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.95);box-shadow:0 10px 30px rgba(120,100,140,.14)}
+nav.menu .envoltura{height:auto;padding:0;gap:4px}
+nav.menu button{flex:none;min-width:64px;height:52px;padding:0 14px;border-radius:999px;gap:2px;font-size:11px;font-weight:600;color:#6E6680}
+nav.menu button .i{width:20px;height:20px}
+nav.menu button[aria-current="page"]{background:#FFCBB3;color:#2A2433}
+nav.menu button[aria-current="page"]::after{display:none}
+.cab h1{font-size:30px}
+main{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+.aviso{bottom:calc(90px + env(safe-area-inset-bottom))}
 </style>
 </head>
 <body>
@@ -521,7 +532,7 @@ nav.menu button[aria-current="page"]::after{width:22px;height:4px;border-radius:
 
 <script>
 "use strict";
-const VERSION = "16";
+const VERSION = "17";
 const CON_RECETAS = false; // recetas ocultas (25/10/2026); poner true para volver a mostrarlas
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxLGwL8uY56Q8Cl1CBQotiZIzz6NdHRpxFjn4kyqybkL5Or9g34nSiurC1aZ8VTjM6iaQ/exec";
 const IMG = "https://prod-mercadona.imgix.net/images/";
